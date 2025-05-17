@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 const fs = require('fs');
+const { console } = require('inspector');
 const { json } = require('stream/consumers');
 
 /* Set up root URL */
@@ -21,10 +22,24 @@ app.post("/workouts", (req, res) => {
     const filePath = 'workouts.json';
     fs.readFile(filePath, 'utf-8', (err, jsonString) => {
         if (err) {
-            console.log(err);
+            console.error('Error reading file:', err);
+            res.status(500).send('Failed to read file.');
         }
         else {
             console.log(jsonString);
+            const jsonObject = JSON.parse(jsonString);
+            jsonObject.push(newWorkout);
+            const jsonWriteString = JSON.stringify(jsonObject)
+            fs.writeFile(filePath, jsonWriteString, 'utf-8', (err) => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    res.status(500).send('Failed to save workout.');
+                }
+                else {
+                    console.log('Workout saved successfully!');
+                    res.status(201).send('Workout saved!');
+                }
+            });
         }
     });
 });

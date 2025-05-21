@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 const fs = require('fs');
-const { console } = require('inspector');
-const { json } = require('stream/consumers');
+
+const workouts = [];
 
 /* Set up root URL */
 app.get("/", (req, res) => {
@@ -16,9 +16,10 @@ app.listen(PORT, () => console.log("App is listening on port " + PORT));
 /* Set up JSON storage */
 app.use(express.json());
 
-/* Set up post request to receive workout data */
+/* Set up POST request to receive workout data */
 app.post("/workouts", (req, res) => {
     const newWorkout = req.body;
+    workouts.push(newWorkout);
     const filePath = 'workouts.json';
     fs.readFile(filePath, 'utf-8', (err, jsonString) => {
         if (err) {
@@ -42,4 +43,9 @@ app.post("/workouts", (req, res) => {
             });
         }
     });
+});
+
+/* GET route to retrieve stored workouts */
+app.get("/workouts", (req, res) => {
+    res.json(workouts);
 });

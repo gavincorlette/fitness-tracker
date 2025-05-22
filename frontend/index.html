@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <h1>Welcome to your fitness tracker!</h1>
+</head>
+<body>
+    <form id="workout-form">
+        <label for="workout-type">Workout: </label>
+        <select name="workout-type" id="workout-type" required>
+            <option value="">--Select A Workout--</option>
+            <option value="Weight Lifting">Weight Lifting</option>
+            <option value="Running">Running</option>
+            <option value="Yoga">Yoga</option>
+            <option value="Walking">Walking</option>
+            <option value="Cycling">Cycling</option>
+            <option value="Swimming">Swimming</option>
+            <option value="Hiking">Hiking</option>
+        </select><br>
+        <label for="duration">Duration (Minutes): </label>
+        <input type="number" name="duration" id="duration" required><br>
+        <label for="date">Date: </label>
+        <input type="date" name="date" id="date" required><br>
+        <label for="time">Time: </label>
+        <input type="time" name="time" id="time"><br>
+        <label for="distance">Distance: </label>
+        <input type="number" id="distance" name="distance">
+        <select name="measurement" id="measurement">
+            <option value=""></option>
+            <option value="miles">Miles</option>
+            <option value="kilometers">Kilometers</option>
+        </select><br>
+        <label>Intensity: 
+            <input type="radio" name="intensity" value="low">
+            Low
+        </label>
+        <label> 
+            <input type="radio" name="intensity" value="medium">
+            Medium
+        </label>
+        <label>
+            <input type="radio" name="intensity" value="high">
+            High
+        </label><br>
+        <label for="notes">Notes: </label><br>
+        <textarea id="notes" name="notes" rows="4" cols="50" placeholder="Add any notes about your workout here"></textarea><br>
+        <button type="submit">Log Workout</button>
+    </form>
+</body>
+</html>

@@ -30,6 +30,11 @@ const distance = document.getElementById("distance").value;
 const measurement = document.getElementById("measurement").value;
 const intensity = document.querySelector('input[name="intensity"]:checked')?.value;
 const notes = document.getElementById("notes").value;
+/* Keep number of characters no more than 300 */
+if (notes.length > 300) {
+    alert("Please limit characters to 300.");
+    return;
+}
 
 /* Ensures number is not less than or equal to 0, but also allows the field to be left empty */
 if (distance !== "" && (Number(distance) <= 0 || isNaN(Number(distance)))) {

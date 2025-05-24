@@ -20,6 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
     /* Save all workout fields to variables */
     const workoutType = document.getElementById("workout-type").value;
     const duration = document.getElementById("duration").value;
+    /* Validate duration is a positive number */
+    if (duration <= 0 || isNaN(duration)) {
+        alert("Please enter a value greater than 0.");
+        return;
+    }
     const date = document.getElementById("date").value;
     const time = document.getElementById("time").value;
     const distance = document.getElementById("distance").value;

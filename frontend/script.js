@@ -5,6 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayDate = new Date().toISOString().split("T")[0];
     dateInput.value = todayDate;
 
+    /* Set time automatically to current time in correct local time*/
+    const timeInput = document.getElementById("time");
+    const currTime = new Date();
+    let hours = currTime.getHours();
+    let minutes = currTime.getMinutes();
+    const localTime = `${hours}:${minutes}`;
+    timeInput.value = localTime;
+
     form.addEventListener("submit", (e) => {
     /* Prevents page from refreshing when submit button is hit */
     e.preventDefault();

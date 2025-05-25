@@ -30,34 +30,25 @@ app.use(express.json());
 
 /* Set up POST request to receive workout data */
 app.post("/workouts", (req, res) => {
-    const newWorkout = req.body;
-    workouts.push(newWorkout);
-    const filePath = 'workouts.json';
-    fs.readFile(filePath, 'utf-8', (err, jsonString) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            res.status(500).send('Failed to read file.');
-        }
-        else {
-            console.log(jsonString);
-            const jsonObject = JSON.parse(jsonString);
-            jsonObject.push(newWorkout);
-            const jsonWriteString = JSON.stringify(jsonObject)
-            fs.writeFile(filePath, jsonWriteString, 'utf-8', (err) => {
-                if (err) {
-                    console.error('Error writing file:', err);
-                    res.status(500).send('Failed to save workout.');
-                }
-                else {
-                    console.log('Workout saved successfully!');
-                    res.status(201).send('Workout saved!');
-                }
-            });
-        }
-    });
+    const workout = {
+        'workout-type':type,
+        duration,
+        date,
+        time,
+        distance,
+        measurement,
+        intensity,
+        notes
+    } = req.body;
+
+    const query = `INSERT INTO workouts(type, duration, date, time, distance, measurement, intensity, notes)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8)
+    `
+
+    pool.query()
 });
 
 /* GET route to retrieve stored workouts */
 app.get("/workouts", (req, res) => {
-    res.json(workouts);
+    
 });

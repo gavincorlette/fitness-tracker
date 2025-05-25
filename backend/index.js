@@ -2,12 +2,24 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 const fs = require('fs');
+const db = require('./database');
 
 const workouts = [];
 
 /* Set up root URL */
 app.get("/", (req, res) => {
     res.send("Server is live!");
+});
+
+/* Tests connection to postgres database */
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await db.query('SELECT NOW()');
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Database connection failed');
+  }
 });
 
 /* Server listening for requests on port 3000 */

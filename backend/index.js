@@ -29,7 +29,8 @@ app.listen(PORT, () => console.log("App is listening on port " + PORT));
 app.use(express.json());
 
 /* Set up POST request to receive workout data */
-app.post("/workouts", (req, res) => {
+app.post("/workouts", async(req, res) => {
+  /* Workout object*/
     const workout = {
         'workout-type':type,
         duration,
@@ -41,11 +42,21 @@ app.post("/workouts", (req, res) => {
         notes
     } = req.body;
 
+    /* Query to insert into table */
     const query = `INSERT INTO workouts(type, duration, date, time, distance, measurement, intensity, notes)
     VALUES($1, $2, $3, $4, $5, $6, $7, $8)
     `
-
-    pool.query()
+    
+    /* Await version for pool.query() */
+    try {
+      const workFields = [type, duration, date, time, distance, measurement, intensity, notes];
+      await pool.query(query, workFields);
+      res.status(201).send("Workout saved!");
+    }
+    catch (err) {
+      console.error(err);
+      res.status(500).send("There was an error.");
+    }
 });
 
 /* GET route to retrieve stored workouts */

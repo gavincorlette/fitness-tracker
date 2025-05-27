@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 const fs = require('fs');
-const db = require('./database');
+const pool = require('./database');
 
 const workouts = [];
 
@@ -31,8 +31,8 @@ app.use(express.json());
 /* Set up POST request to receive workout data */
 app.post("/workouts", async(req, res) => {
   /* Workout object*/
-    const workout = {
-        'workout-type':type,
+    const {
+        type,
         duration,
         date,
         time,
@@ -60,6 +60,7 @@ app.post("/workouts", async(req, res) => {
 });
 
 /* GET route to retrieve stored workouts */
-app.get("/workouts", (req, res) => {
-    
+app.get("/workouts", async(req, res) => {
+    const result = await pool.query(`SELECT * FROM workouts`);
+    res.send(result.rows);
 });

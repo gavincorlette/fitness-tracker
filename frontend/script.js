@@ -12,7 +12,7 @@ let minutes = currTime.getMinutes();
 const localTime = `${hours}:${minutes}`;
 timeInput.value = localTime;
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
 /* Prevents page from refreshing when submit button is hit */
 e.preventDefault();
 
@@ -49,4 +49,37 @@ if (distance !== "" && !measurement) {
 }
 
 console.log("Workout logged!");
+
+const workoutData = {
+    type: workoutType,
+    duration,
+    date,
+    time,
+    distance,
+    measurement,
+    intensity,
+    notes
+};
+
+fetch("http://localhost:3000/workouts", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(workoutData)
+})
+.then((response) => {
+    if(!response.ok) {
+        throw new Error("Failed to send workout.");
+    }
+    else {
+        return response.json();
+    }
+})
+.then((message) => {
+    console.log(message);
+})
+.catch((err) => {
+    console.error(err);
+});
 });

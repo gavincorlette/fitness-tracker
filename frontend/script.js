@@ -54,11 +54,11 @@ const workoutData = {
     type: workoutType,
     duration,
     date,
-    time,
-    distance,
-    measurement,
-    intensity,
-    notes
+    time: time || null, // Allow time to be null if not provided
+    distance: distance || null, // Allow distance to be null if not provided
+    measurement: measurement || null, // Allow measurement to be null if not provided
+    intensity: intensity || null, // Allow intensity to be null if not provided
+    notes: notes || null // Allow notes to be null if not provided
 };
 
 fetch("http://localhost:3000/workouts", {
@@ -76,8 +76,8 @@ fetch("http://localhost:3000/workouts", {
         return response.json();
     }
 })
-.then((message) => {
-    console.log(message);
+.then((data) => {
+    console.log(data.message);
 })
 .catch((err) => {
     console.error(err);

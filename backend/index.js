@@ -3,8 +3,15 @@ const app = express();
 const PORT = 3000;
 const fs = require('fs');
 const pool = require('./database');
+const cors = require('cors');
 
-const workouts = [];
+/* Set up CORS to allow requests from the frontend */
+app.use(cors());
+
+/*const workouts = [];*/
+
+/* Middleware to parse JSON bodies */
+app.use(express.json());
 
 /* Set up root URL */
 app.get("/", (req, res) => {
@@ -14,7 +21,7 @@ app.get("/", (req, res) => {
 /* Tests connection to postgres database */
 app.get('/test-db', async (req, res) => {
   try {
-    const result = await db.query('SELECT NOW()');
+    const result = await pool.query('SELECT NOW()');
     res.send(result.rows[0]);
   } catch (err) {
     console.error(err);
@@ -24,9 +31,6 @@ app.get('/test-db', async (req, res) => {
 
 /* Server listening for requests on port 3000 */
 app.listen(PORT, () => console.log("App is listening on port " + PORT));
-
-/* Set up JSON storage */
-app.use(express.json());
 
 /* Set up POST request to receive workout data */
 app.post("/workouts", async(req, res) => {
@@ -51,11 +55,11 @@ app.post("/workouts", async(req, res) => {
     try {
       const workFields = [type, duration, date, time, distance, measurement, intensity, notes];
       await pool.query(query, workFields);
-      res.status(201).send("Workout saved!");
+      res.status(201).json({message: "Workout saved!"});
     }
     catch (err) {
       console.error(err);
-      res.status(500).send("There was an error.");
+      res.status(500).json({message: "There was an error."});
     }
 });
 

@@ -61,25 +61,28 @@ const workoutData = {
     notes: notes || null // Allow notes to be null if not provided
 };
 
-fetch("http://localhost:3000/workouts", {
+fetch("http://localhost:3000/workouts", { // Send a POST request to the server with the workout data
     method: "POST",
     headers: {
         "Content-Type": "application/json"
     },
     body: JSON.stringify(workoutData)
 })
-.then((response) => {
-    if(!response.ok) {
+.then((response) => { // Check if the response is ok (status in the range 200-299)
+    if(!response.ok) { // If the response is not ok, throw an error
         throw new Error("Failed to send workout.");
     }
-    else {
+    else { // If the response is ok, parse the JSON
         return response.json();
     }
 })
-.then((data) => {
-    console.log(data.message);
+.then((data) => {  // Handle the response data
+    alert(data.message); // Show the success message
+    form.reset(); // Reset the form fields
+    console.log(data.message);  // Log the success message
 })
-.catch((err) => {
+.catch((err) => { // Handle any errors that occurred during the fetch
+    alert("Error: " + err.message); // Alert the user about the error
     console.error(err);
 });
 });

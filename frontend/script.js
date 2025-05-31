@@ -48,6 +48,14 @@ if (distance !== "" && !measurement) {
     return;
 }
 
+// Don't allow distance for certain workout types
+if (workoutType === "Weight Lifting" || workoutType === "Yoga") { 
+    if (distance !== "") {
+        alert("Distance is not applicable for this workout type.");
+        return;
+    }
+}
+
 console.log("Workout logged!");
 
 const workoutData = {

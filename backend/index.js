@@ -4,7 +4,7 @@ const PORT = 3000;
 const fs = require('fs');
 const pool = require('./database');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config({path: 'strava.env'}); // Load environment variables from strava.env file
 
 /* Set up CORS to allow requests from the frontend */
 app.use(cors());
@@ -72,7 +72,7 @@ app.get("/workouts", async(req, res) => {
 
 // Strava OAuth2 setup
 app.get("/strava/callback", async (req, res) => {
-  const code = req.query.code;
+  const code = req.query.code; // Get the code from the query parameters
   // Check if the code is provided
   if (!code) {
     return res.status(400).send('No code provided'); // Return an error if no code is provided
@@ -96,12 +96,19 @@ app.get("/strava/callback", async (req, res) => {
     // Check if the response is ok
     const data = await response.json();
     if (data.access_token) { // If access token is received
-      res.send('Access token received successfully!');
+      const accessToken = data.access_token;
+      const refreshToken = data.refresh_token;
+
+      console.log('Access Token:', accessToken);
+      console.log('Refresh Token:', refreshToken);
+
+      res.redirect('http://127.0.0.1:5500/frontend/'); // Redirect to the frontend after successful authentication
     } else { // If access token is not received, send an error response
+      console.error('Failed to retrieve access token:', data);
       res.status(400).send('Failed to retrieve access token');
     }
   } catch (error) {
-    console.error(error);
+    console.error('OAuth error:', error);
     res.status(500).send('Internal server error');
   }
 });

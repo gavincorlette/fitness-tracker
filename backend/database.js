@@ -9,3 +9,21 @@ const pool = new Pool({
 });
 
 module.exports = pool;
+
+// Fuction to save Strava tokens in the database
+async function saveStravaTokens({accessToken, refreshToken, athleteId}) {
+  try {
+    const query = `INSERT INTO strava_tokens (athlete_id, access_token, refresh_token)
+      VALUES ($1, $2, $3)`;
+    const values = [athleteId, accessToken, refreshToken];
+    
+    await pool.query(query, values);
+    console.log('Strava tokens saved successfully.');
+    return true;
+  }
+  catch (err) {
+    console.error('Error saving Strava tokens:', err);
+  }
+}
+
+module.exports = {saveStravaTokens};

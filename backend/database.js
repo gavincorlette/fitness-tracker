@@ -8,8 +8,6 @@ const pool = new Pool({
   port: 5432,
 });
 
-module.exports = pool;
-
 // Fuction to save Strava tokens in the database
 async function saveStravaTokens({accessToken, refreshToken, athleteId}) {
   try {
@@ -17,7 +15,7 @@ async function saveStravaTokens({accessToken, refreshToken, athleteId}) {
       VALUES ($1, $2, $3)`;
     const values = [athleteId, accessToken, refreshToken];
     
-    await pool.query(query, values);
+    await pool.query(query, values); // Execute the query to insert tokens into the database
     console.log('Strava tokens saved successfully.');
     return true;
   }
@@ -26,4 +24,5 @@ async function saveStravaTokens({accessToken, refreshToken, athleteId}) {
   }
 }
 
-module.exports = {saveStravaTokens};
+// // Export the pool and saveStravaTokens function for use in other modules
+module.exports = {pool, saveStravaTokens};

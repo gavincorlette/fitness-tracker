@@ -171,8 +171,8 @@ app.get("/strava/activities", async (req, res) => {
 
     for (const activity of activities) {
       // Insert each activity into the database
-      const query = `INSERT INTO strava_activities (strava_id, athlete_id, name, type, distance, moving_time, elapsed_time, start_date, timezone, average_speed, notes)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      const query = `INSERT INTO strava_activities (strava_id, athlete_id, name, type, distance, moving_time, elapsed_time, start_date, timezone, average_speed)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       ON CONFLICT (strava_id) DO NOTHING`; // Use ON CONFLICT to avoid duplicate entries
       await pool.query(query, [
         activity.id,
@@ -185,7 +185,6 @@ app.get("/strava/activities", async (req, res) => {
         activity.start_date,
         activity.timezone,
         activity.average_speed || null, // Handle average speed if it is not present
-        activity.description || null // Handle notes if they are not present
       ]);
     };
     console.log("Activities retrieved and saved.");
@@ -195,9 +194,6 @@ app.get("/strava/activities", async (req, res) => {
     console.error('Error retrieving access token:', err);
     return res.status(500).send('Internal server error'); // Return an error if there is an issue with the database query
   }
-
-  res.status(200).json(activities); // Send the activities as a JSON response
-  console.log('Activities retrieved successfully');
 })
 
 // Function to refresh access tokens

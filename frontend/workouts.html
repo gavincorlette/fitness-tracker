@@ -72,7 +72,6 @@
                 <th>Type</th>
                 <th>Distance</th>
                 <th>Moving Time</th>
-                <th>Description</th>
             </tr>
         </thead>
         <tbody id="strava-workout-list">
@@ -113,9 +112,8 @@
                     row.innerHTML = `
                         <td>${workout.start_date}</td>
                         <td>${workout.type}</td>
-                        <td>${(workout.distance / 1000).toFixed(2)} km</td> <!-- Assuming distance is in meters, converting to kilometers -->
+                        <td>${(workout.distance / 1609.34).toFixed(2)} mi</td> <!-- Converting meters to miles -->
                         <td>${movingTimeDisplay}</td>
-                        <td>${workout.description || 'No description'}</td>
                     `;
                     workoutList.appendChild(row);
                 });

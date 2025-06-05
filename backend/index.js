@@ -172,7 +172,8 @@ app.get("/strava/activities", async (req, res) => {
     for (const activity of activities) {
       // Insert each activity into the database
       const query = `INSERT INTO strava_activities (strava_id, athlete_id, name, type, distance, moving_time, elapsed_time, start_date, timezone, average_speed, notes)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      ON CONFLICT (strava_id) DO NOTHING`; // Use ON CONFLICT to avoid duplicate entries
       await pool.query(query, [
         activity.id,
         athleteId,

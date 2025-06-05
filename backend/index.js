@@ -103,8 +103,10 @@ app.get("/strava/callback", async (req, res) => {
 
       console.log('Access Token:', accessToken);
       console.log('Refresh Token:', refreshToken);
+      console.log('Athlete ID:', athleteId);
 
-      res.redirect('http://127.0.0.1:5500/frontend/'); // Redirect to the frontend after successful authentication
+
+      res.redirect(`http://127.0.0.1:5500/frontend/workouts.html?athleteId=${athleteId}`); // Redirect to the frontend with the athlete ID as a query parameter
     } else { // If access token is not received, send an error response
       console.error('Failed to retrieve access token:', data);
       res.status(400).send('Failed to retrieve access token');
@@ -122,19 +124,48 @@ app.get("/strava/activities", async (req, res) => {
   }
 
   try {
-    const result = await pool.query('SELECT access_token FROM strava_tokens WHERE athlete_id = $1', [athleteId]);
+    const result = await pool.query('SELECT access_token, refresh_token FROM strava_tokens WHERE athlete_id = $1', [athleteId]);
     if (result.rows.length === 0) {
       return res.status(404).send('No access token found for the given athlete ID'); // Return an error if no access token is found
     }
     const accessToken = result.rows[0].access_token; // Get the access token from the database
-    const response = await fetch(`https://www.strava.com/api/v3/athlete/activities`, {
+
+    let {access_token, refresh_token} = result.rows[0]; // Destructure access token and refresh token from the result
+    console.log('Using Access Token:', accessToken);
+
+    let response = await fetch(`https://www.strava.com/api/v3/athlete/activities`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status === 401) { // If the access token is expired
+      console.log('Access token expired, refreshing...');
+      access_token = await refreshAccessTokens(refresh_token, athleteId); // Refresh the access token
+      console.log('New Access Token:', access_token);
+
+      // Retry fetching activities with the new access token
+      const retryResponse = await fetch(`https://www.strava.com/api/v3/athlete/activities`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${access_token}`,
+        },
+      });
+
+      // Check if the retry response is ok
+      if (!retryResponse.ok) {
+        console.error("Strava API error on retry:", await retryResponse.text());
+        return res.status(500).send('Failed to fetch activities from Strava after refreshing token');
+      }
+      response = retryResponse; // Use the response from the retry
+    }
+
     if (!response.ok) {
-      throw new Error('Failed to fetch activities from Strava'); // Throw an error if the response is not ok
+      const errorText = await response.text(); // Try parsing as text first so we can debug malformed responses
+      console.error("Strava API error:", errorText); // Show full response if failed
+      return res.status(500).send(`Strava API error: ${errorText}`);
+      /*throw new Error('Failed to fetch activities from Strava'); // Throw an error if the response is not ok*/
     }
     const activities = await response.json(); // Parse the JSON response
 
@@ -156,6 +187,8 @@ app.get("/strava/activities", async (req, res) => {
         activity.description || null // Handle notes if they are not present
       ]);
     };
+    console.log("Activities retrieved and saved.");
+    return res.status(200).json(activities);
   }
   catch (err) {
     console.error('Error retrieving access token:', err);
@@ -165,3 +198,39 @@ app.get("/strava/activities", async (req, res) => {
   res.status(200).json(activities); // Send the activities as a JSON response
   console.log('Activities retrieved successfully');
 })
+
+// Function to refresh access tokens
+async function refreshAccessTokens(refreshToken, athleteId) {
+  const clientId = process.env.STRAVA_CLIENT_ID;
+  const clientSecret = process.env.STRAVA_CLIENT_SECRET;
+
+  // Fetch the token from Strava using the refresh token
+  const response = await fetch('https://www.strava.com/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    }),
+  });
+
+  const data = await response.json(); // Parse the JSON response
+
+  // Check if the response contains a new access token
+  if (data.access_token) {
+    await pool.query(
+      'UPDATE strava_tokens SET access_token = $1 WHERE athlete_id = $2', // If so, update the access token in the database
+      [data.access_token, athleteId]
+    );
+    console.log('Access token refreshed successfully for athlete ID:', athleteId); 
+    return data.access_token; // Return the new access token
+  }
+  else {
+    console.error('Failed to refresh access token:', JSON.stringify(data));
+    throw new Error('Failed to refresh access token');
+  }
+}

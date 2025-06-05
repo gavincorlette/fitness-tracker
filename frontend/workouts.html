@@ -6,9 +6,10 @@
     <title>Logged Workouts</title>
 </head>
 <body>
-    <h1>Logged Workouts</h1>
+    <h2>Logged Workouts</h2>
     <ul id="workout-list">
-
+        <!-- This list will be populated with logged workouts -->
+        <!-- Each workout will be displayed as a list item -->
     </ul>
     <script defer> // Fetching the logged workouts from the server
     // This script will run after the DOM is fully loaded
@@ -61,6 +62,73 @@
             console.error("There was a problem with the fetch operation:", error);
         });
     </script>
-    <a href="index.html">Log Another Workout</a>
+    <a href="index.html">Log Another Workout</a><br>
+    <!--Strava Workouts-->
+    <h2>Strava Workouts</h2>
+    <table id="strava-workout-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Distance</th>
+                <th>Moving Time</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="strava-workout-list">
+            <!-- This table will be populated with Strava workouts -->
+            <!-- Each workout will be displayed as a row in the table -->
+        </tbody>
+
+        <!-- Fetching Strava workouts from the server -->    
+        <script defer>
+            const urlParams = new URLSearchParams(window.location.search);
+            const athleteId = urlParams.get("athleteId");
+
+            console.log("Current URL:", window.location.href);
+            console.log("Extracted athleteId:", athleteId);
+
+            async function getStravaWorkouts() {
+                try {
+                    const response = await fetch(`http://localhost:3000/strava/activities?athleteId=${athleteId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                const data = await response.json(); // Parsing the JSON response
+                const workoutList = document.getElementById("strava-workout-list");
+                workoutList.innerHTML = ""; // Clear the existing content
+                data.forEach(workout => {
+                    const row = document.createElement("tr");
+                    // Formatting the date to a more readable format
+                    let workoutDate = new Date(workout.start_date);
+                    workout.start_date = workoutDate.toLocaleDateString();
+                    // Formatting the moving time to a more readable format
+                    let movingTime = Math.floor(workout.moving_time / 60);
+                    let movingTimeDisplay = `${movingTime} minutes`;
+                    if (movingTime >= 60) {
+                        movingTimeDisplay = `${Math.floor(movingTime / 60)} hour(s) ${movingTime % 60} minutes`;
+                    }
+                    row.innerHTML = `
+                        <td>${workout.start_date}</td>
+                        <td>${workout.type}</td>
+                        <td>${(workout.distance / 1000).toFixed(2)} km</td> <!-- Assuming distance is in meters, converting to kilometers -->
+                        <td>${movingTimeDisplay}</td>
+                        <td>${workout.description || 'No description'}</td>
+                    `;
+                    workoutList.appendChild(row);
+                });
+                } catch (error) {
+                    console.error("Error fetching Strava workouts:", error);
+                }
+            }
+            if (athleteId) {
+                window.addEventListener("load", getStravaWorkouts);
+            } else {
+                console.error("No athleteId found in URL, cannot fetch Strava workouts.");
+            }
+        </script>
+    </table>
 </body>
 </html>

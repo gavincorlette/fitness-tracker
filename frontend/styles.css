@@ -2,6 +2,13 @@ html, body {
   height: 100%;
   margin: 0;
   background-color: #ffffff;
+  font-family: 'Azeret Mono', monospace;
+  font-weight: 700;
+}
+
+header {
+  text-align: center;
+  align-items: center;
 }
 .page-container {
   display: flex;
@@ -30,4 +37,17 @@ html, body {
   height: 20px;
   width: auto;
   stroke: white;
+}
+
+button {
+  background-color: #007BFF;
+  color: white;
+  gap: 0.5rem;
+  font-weight: bold;
+  border: none;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;;
 }

@@ -1,0 +1,33 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  background-color: #ffffff;
+}
+.page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.strava-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #007BFF;
+  color: white;
+  font-weight: bold;
+  border: none;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.strava-icon {
+  height: 20px;
+  width: auto;
+  stroke: white;
+}

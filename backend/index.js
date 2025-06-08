@@ -1,10 +1,14 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
 const fs = require('fs');
 const {pool, saveStravaTokens} = require('./database');
 const cors = require('cors');
-require('dotenv').config({path: 'strava.env'}); // Load environment variables from strava.env file
+require('dotenv').config();
 
 /* Set up CORS to allow requests from the frontend */
 app.use(cors());
@@ -31,7 +35,7 @@ app.get('/test-db', async (req, res) => {
 });
 
 /* Server listening for requests on port 3000 */
-app.listen(PORT, () => console.log("App is listening on port " + PORT));
+//app.listen(PORT, () => console.log("App is listening on port " + PORT));
 
 /* Set up POST request to receive workout data */
 app.post("/workouts", async(req, res) => {
@@ -105,8 +109,8 @@ app.get("/strava/callback", async (req, res) => {
       console.log('Refresh Token:', refreshToken);
       console.log('Athlete ID:', athleteId);
 
-
-      res.redirect(`http://127.0.0.1:5500/frontend/workouts.html?athleteId=${athleteId}`); // Redirect to the frontend with the athlete ID as a query parameter
+      const redirectUrl = process.env.FRONTEND_URL || 'http://127.0.0.1:5500/frontend/workouts.html'; // Use the frontend URL from environment variables or default to localhost
+      res.redirect(`${redirectUrl}?athleteId=${athleteId}`); // Redirect to the frontend with the athlete ID as a query parameter
     } else { // If access token is not received, send an error response
       console.error('Failed to retrieve access token:', data);
       res.status(400).send('Failed to retrieve access token');

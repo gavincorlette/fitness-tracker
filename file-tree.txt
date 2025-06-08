@@ -1,0 +1,28 @@
+fitness-tracker/
+├─ .github/
+│  └─ workflows/
+│     └─ fly-deploy.yml
+├─ backend/
+│  ├─ .dockerignore
+│  ├─ .gitignore
+│  ├─ database.js
+│  ├─ Dockerfile
+│  ├─ index.js
+│  ├─ package-lock.json
+│  ├─ package.json
+│  └─ strava.env
+├─ frontend/
+│  ├─ images/
+│  │  ├─ fitness-tracker-high-resolution-logo.png
+│  │  ├─ strava_logo.svg
+│  │  └─ strava.png
+│  ├─ index.html
+│  ├─ script.js
+│  ├─ styles.css
+│  └─ workouts.html
+├─ .dockerignore
+├─ docker-compose.yml
+├─ Dockerfile
+├─ file-tree.txt
+└─ fly.toml
+

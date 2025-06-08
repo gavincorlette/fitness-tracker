@@ -10,6 +10,7 @@ const {pool, saveStravaTokens} = require('./database');
 const cors = require('cors');
 require('dotenv').config();
 
+
 /* Set up CORS to allow requests from the frontend */
 app.use(cors());
 
@@ -77,6 +78,20 @@ app.get("/workouts", async(req, res) => {
 // Strava OAuth2 setup
 app.get("/strava/callback", async (req, res) => {
   const code = req.query.code; // Get the code from the query parameters
+
+  // STEP 1: Log the code and the POST body data
+  console.log("CODE RECEIVED:", code);
+  console.log("Posting to Strava with:", {
+    client_id: process.env.STRAVA_CLIENT_ID,
+    client_secret: process.env.STRAVA_CLIENT_SECRET,
+    code: code,
+    grant_type: 'authorization_code',
+  });
+
+  // STEP 2: TEMPORARILY log your env vars to make sure they're being read
+  console.log("CLIENT_ID:", process.env.STRAVA_CLIENT_ID);
+  console.log("CLIENT_SECRET:", process.env.STRAVA_CLIENT_SECRET);
+  
   // Check if the code is provided
   if (!code) {
     return res.status(400).send('No code provided'); // Return an error if no code is provided

@@ -1,12 +1,7 @@
 fitness-tracker/
-├─ .github/
-│  └─ workflows/
-│     └─ fly-deploy.yml
 ├─ backend/
-│  ├─ .dockerignore
 │  ├─ .gitignore
 │  ├─ database.js
-│  ├─ Dockerfile
 │  ├─ index.js
 │  ├─ package-lock.json
 │  ├─ package.json
@@ -20,9 +15,8 @@ fitness-tracker/
 │  ├─ script.js
 │  ├─ styles.css
 │  └─ workouts.html
-├─ .dockerignore
-├─ docker-compose.yml
-├─ Dockerfile
-├─ file-tree.txt
-└─ fly.toml
+└─ file-tree.txt
+
+
+
 

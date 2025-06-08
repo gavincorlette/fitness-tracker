@@ -16,7 +16,7 @@
     </ul>
     <script defer> // Fetching the logged workouts from the server
     // This script will run after the DOM is fully loaded
-        fetch("http://localhost:3000/workouts")
+        fetch("http://localhost:8080/workouts")
         .then(response => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");
@@ -93,7 +93,7 @@
 
             async function getStravaWorkouts() {
                 try {
-                    const response = await fetch(`http://localhost:3000/strava/activities?athleteId=${athleteId}`, {
+                    const response = await fetch(`http://localhost:8080/strava/activities?athleteId=${athleteId}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'

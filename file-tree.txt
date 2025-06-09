@@ -1,11 +1,11 @@
 fitness-tracker/
 ├─ backend/
+│  ├─ .env
 │  ├─ .gitignore
 │  ├─ database.js
 │  ├─ index.js
 │  ├─ package-lock.json
-│  ├─ package.json
-│  └─ strava.env
+│  └─ package.json
 ├─ frontend/
 │  ├─ images/
 │  │  ├─ fitness-tracker-high-resolution-logo.png

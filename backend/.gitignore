@@ -1,3 +1,4 @@
 node_modules/
-strava.env
+.env
 images/
+file-tree.txt

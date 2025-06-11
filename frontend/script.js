@@ -69,7 +69,7 @@ const workoutData = {
     notes: notes || null // Allow notes to be null if not provided
 };
 
-fetch("https://fitness-tracker-crimson-moon-5474.fly.dev/workouts", { // Send a POST request to the server with the workout data
+fetch("https://fitness-tracker-restless-pond-869.fly.dev/workouts", { // Send a POST request to the server with the workout data
     method: "POST",
     headers: {
         "Content-Type": "application/json"

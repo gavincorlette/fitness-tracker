@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
+const path = require('path');
 const fs = require('fs');
 const {pool, saveStravaTokens} = require('./database');
 const cors = require('cors');
@@ -18,6 +18,9 @@ app.use(cors());
 
 /* Middleware to parse JSON bodies */
 app.use(express.json());
+
+// Serve static files from the frontend directory
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 /* Set up root URL */
 app.get("/", (req, res) => {

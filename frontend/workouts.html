@@ -16,7 +16,7 @@
     </ul>
     <script defer> // Fetching the logged workouts from the server
     // This script will run after the DOM is fully loaded
-        fetch("http://localhost:8080/workouts")
+        fetch("/workouts")
         .then(response => {
             if (!response.ok) {
                 throw new Error("Network response was not ok");

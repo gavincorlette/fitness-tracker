@@ -22,6 +22,8 @@ app.use(express.json());
 // Serve static files from the frontend directory
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+console.log('Backend index.js loaded, path module:', typeof path);
+
 /* Set up root URL */
 app.get("/", (req, res) => {
     res.send("Server is live!");
